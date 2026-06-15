@@ -9,6 +9,9 @@ PII_PATTERNS: dict[str, str] = {
     "cccd": r"\b\d{12}\b",
     "credit_card": r"\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b",
     # TODO: Add more patterns (e.g., Passport, Vietnamese address keywords)
+    "passport": r"\b[A-Z]{1,2}\d{7,8}\b",
+    "ip_address": r"\b(?:\d{1,3}\.){3}\d{1,3}\b",
+    "address_vn": r"(?i)\b(?:phường|quận|thành phố|tỉnh|đường|huyện|xã|thị xã|thị trấn|thôn|ấp)\b\s+[\w\s,-]+",
 }
 
 
