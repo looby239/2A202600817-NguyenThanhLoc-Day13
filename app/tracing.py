@@ -22,6 +22,9 @@ try:
             else:
                 self.client.update_current_span(**kwargs)
 
+        def score_current_trace(self, name: str, value: float) -> None:
+            self.client.score_current_trace(name=name, value=value)
+
     langfuse_context = LangfuseContextWrapper()
 
 except Exception:  # pragma: no cover
@@ -35,6 +38,9 @@ except Exception:  # pragma: no cover
             return None
 
         def update_current_observation(self, **kwargs: Any) -> None:
+            return None
+
+        def score_current_trace(self, name: str, value: float) -> None:
             return None
 
     langfuse_context = _DummyContext()

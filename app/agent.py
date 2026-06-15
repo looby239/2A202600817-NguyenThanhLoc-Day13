@@ -48,6 +48,10 @@ class LabAgent:
             session_id=session_id,
             tags=["lab", feature, selected_model],
         )
+        langfuse_context.score_current_trace(
+            name="quality_score",
+            value=quality_score,
+        )
         langfuse_context.update_current_observation(
             metadata={"doc_count": len(docs), "query_preview": summarize_text(message)},
             usage_details={"input": response.usage.input_tokens, "output": response.usage.output_tokens},
