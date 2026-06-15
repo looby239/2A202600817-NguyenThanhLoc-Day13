@@ -9,12 +9,32 @@ PII_PATTERNS: dict[str, str] = {
     "cccd": r"\b\d{12}\b",
     "credit_card": r"\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b",
     # TODO: Add more patterns (e.g., Passport, Vietnamese address keywords)
+    "passport": r"(?i)\b[a-z]\d{7}\b",
+    "address_vn": r"(?i)\b(?:số\s+\d+\s+)?(?:đường|phố|quận|huyện|phường|tỉnh|thành\s+phố|xã|street|district|ward|province|city)\b",
+
 }
+
+
+def log_audit(event: str, **payload) -> None:
+    import json
+    from datetime import datetime, timezone
+    audit_record = {
+        "ts": datetime.now(timezone.utc).isoformat() + "Z",
+        "event": event,
+        "payload": payload
+    }
+    try:
+        with open("data/audit.jsonl", "a", encoding="utf-8") as f:
+            f.write(json.dumps(audit_record) + "\n")
+    except Exception:
+        pass
 
 
 def scrub_text(text: str) -> str:
     safe = text
     for name, pattern in PII_PATTERNS.items():
+        if re.search(pattern, safe):
+            log_audit("pii_redacted", type=name, preview=safe[:30] + "...")
         safe = re.sub(pattern, f"[REDACTED_{name.upper()}]", safe)
     return safe
 

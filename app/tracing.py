@@ -2,9 +2,28 @@ from __future__ import annotations
 
 import os
 from typing import Any
+from dotenv import load_dotenv
+load_dotenv()
 
 try:
-    from langfuse.decorators import observe, langfuse_context
+    from langfuse import observe, get_client
+    
+    class LangfuseContextWrapper:
+        def __init__(self):
+            self.client = get_client()
+
+        def update_current_trace(self, **kwargs: Any) -> None:
+            self.client.update_current_trace(**kwargs)
+
+        def update_current_observation(self, **kwargs: Any) -> None:
+            # langfuse v3 client uses update_current_generation and update_current_span
+            if "usage_details" in kwargs:
+                self.client.update_current_generation(**kwargs)
+            else:
+                self.client.update_current_span(**kwargs)
+
+    langfuse_context = LangfuseContextWrapper()
+
 except Exception:  # pragma: no cover
     def observe(*args: Any, **kwargs: Any):
         def decorator(func):

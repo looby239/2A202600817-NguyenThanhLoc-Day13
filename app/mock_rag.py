@@ -1,4 +1,6 @@
 from __future__ import annotations
+from .tracing import observe  # <-- Thêm import
+
 
 import time
 
@@ -10,7 +12,7 @@ CORPUS = {
     "policy": ["Do not expose PII in logs. Use sanitized summaries only."],
 }
 
-
+@observe()
 def retrieve(message: str) -> list[str]:
     if STATE["tool_fail"]:
         raise RuntimeError("Vector store timeout")
@@ -21,3 +23,4 @@ def retrieve(message: str) -> list[str]:
         if key in lowered:
             return docs
     return ["No domain document matched. Use general fallback answer."]
+    

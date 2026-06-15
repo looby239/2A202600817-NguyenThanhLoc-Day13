@@ -29,16 +29,24 @@ class LabAgent:
     def run(self, user_id: str, feature: str, session_id: str, message: str) -> AgentResult:
         started = time.perf_counter()
         docs = retrieve(message)
+        
+        # COST OPTIMIZATION: Route simple/summary tasks or short inputs to cheaper claude-haiku-3-5
+        selected_model = self.model
+        if len(message) < 50 or feature == "summary":
+            selected_model = "claude-haiku-3-5"
+            
+        llm = FakeLLM(model=selected_model) if selected_model != self.model else self.llm
         prompt = f"Feature={feature}\nDocs={docs}\nQuestion={message}"
-        response = self.llm.generate(prompt)
+        response = llm.generate(prompt)
+        
         quality_score = self._heuristic_quality(message, response.text, docs)
         latency_ms = int((time.perf_counter() - started) * 1000)
-        cost_usd = self._estimate_cost(response.usage.input_tokens, response.usage.output_tokens)
+        cost_usd = self._estimate_cost(response.usage.input_tokens, response.usage.output_tokens, selected_model)
 
         langfuse_context.update_current_trace(
             user_id=hash_user_id(user_id),
             session_id=session_id,
-            tags=["lab", feature, self.model],
+            tags=["lab", feature, selected_model],
         )
         langfuse_context.update_current_observation(
             metadata={"doc_count": len(docs), "query_preview": summarize_text(message)},
@@ -62,9 +70,15 @@ class LabAgent:
             quality_score=quality_score,
         )
 
-    def _estimate_cost(self, tokens_in: int, tokens_out: int) -> float:
-        input_cost = (tokens_in / 1_000_000) * 3
-        output_cost = (tokens_out / 1_000_000) * 15
+    def _estimate_cost(self, tokens_in: int, tokens_out: int, model: str) -> float:
+        # Claude 3.5 Sonnet: input = $3.00/M, output = $15.00/M
+        # Claude 3.5 Haiku: input = $0.25/M, output = $1.25/M (91.7% cheaper!)
+        if "haiku" in model.lower():
+            input_cost = (tokens_in / 1_000_000) * 0.25
+            output_cost = (tokens_out / 1_000_000) * 1.25
+        else:
+            input_cost = (tokens_in / 1_000_000) * 3
+            output_cost = (tokens_out / 1_000_000) * 15
         return round(input_cost + output_cost, 6)
 
     def _heuristic_quality(self, question: str, answer: str, docs: list[str]) -> float:
