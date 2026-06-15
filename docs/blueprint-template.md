@@ -3,10 +3,10 @@
 > **Instruction**: Fill in all sections below. This report is designed to be parsed by an automated grading assistant. Ensure all tags (e.g., `[GROUP_NAME]`) are preserved.
 
 ## 1. Team Metadata
-- [GROUP_NAME]: NguyenThanhLoc
+- [GROUP_NAME]: Group E2
 - [REPO_URL]: https://github.com/looby239/2A202600817-NguyenThanhLoc-Day13
 - [MEMBERS]:
-  - Member A: NGUYEN_THANH_LOC | Role: Logging & PII
+  - Member A: Quyen | Role: Logging & PII
   - Member B: NGUYEN_THANH_LOC | Role: Tracing & Enrichment
   - Member C: NGUYEN_THANH_LOC | Role: SLO & Alerts
   - Member D: NGUYEN_THANH_LOC | Role: Load Test & Dashboard
@@ -40,7 +40,7 @@
 
 ### 3.3 Alerts & Runbook
 - [ALERT_RULES_SCREENSHOT]: docs/assets/alert_rules.PNG
-- [SAMPLE_RUNBOOK_LINK]: [docs/alerts.md#L1]
+- [SAMPLE_RUNBOOK_LINK]: [alerts.md#L1](alerts.md#L1)
 
 ---
 
@@ -55,9 +55,20 @@
 
 ## 5. Individual Contributions & Evidence
 
+### Quyen
+- [TASKS_COMPLETED]: 
+  - Implemented Correlation ID Middleware in `app/middleware.py`.
+  - Enriched structured log context variables with user/session details in `app/main.py`.
+  - Added Passport, IP, and Vietnamese Address pattern matching to `app/pii.py`.
+  - Registered PII scrubbing processor `scrub_event` in `app/logging_config.py`.
+  - Validated logging pipeline and achieved 100/100 score on `validate_logs.py`.
+- [EVIDENCE_LINK]: Local commits in repository history.
+
 ### [NGUYEN_THANH_LOC] 2202600817 
 - [TASKS_COMPLETED]: Hoàn thành toàn bộ bài Lab bao gồm: Thiết lập Correlation ID middleware, làm giàu log (enrichment), mở rộng regex lọc dữ liệu PII nhạy cảm, cấu hình bộ lọc PII cho structlog, tích hợp tracing qua Langfuse v3, cấu hình Alert rules và Runbooks, chạy kịch bản sự cố và load test, xây dựng Dashboard và cài đặt các tính năng điểm thưởng (Cost Optimization, Audit Logs, Custom Quality Metrics).
 - [EVIDENCE_LINK]: https://github.com/looby239/2A202600817-NguyenThanhLoc-Day13/commits/main
+
+---
 
 ## 6. Bonus Items (Optional)
 - [BONUS_COST_OPTIMIZATION]: Đã triển khai cơ chế Dynamic Routing định tuyến các truy vấn ngắn (<50 ký tự) hoặc tác vụ tóm tắt (`summary`) sang mô hình giá rẻ `claude-haiku-3-5` (giúp giảm chi phí tới 91.7%). Thông tin model tương ứng được tag trực tiếp lên Langfuse.

@@ -8,10 +8,9 @@ PII_PATTERNS: dict[str, str] = {
     "phone_vn": r"(?:\+84|0)[ \.-]?\d{3}[ \.-]?\d{3}[ \.-]?\d{3,4}", # Matches 090 123 4567, 090.123.4567, etc.
     "cccd": r"\b\d{12}\b",
     "credit_card": r"\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b",
-    # TODO: Add more patterns (e.g., Passport, Vietnamese address keywords)
-    "passport": r"(?i)\b[a-z]\d{7}\b",
-    "address_vn": r"(?i)\b(?:số\s+\d+\s+)?(?:đường|phố|quận|huyện|phường|tỉnh|thành\s+phố|xã|street|district|ward|province|city)\b",
-
+    "passport": r"(?i)\b[a-z]{1,2}\d{7,8}\b",
+    "ip_address": r"\b(?:\d{1,3}\.){3}\d{1,3}\b",
+    "address_vn": r"(?i)\b(?:số\s+\d+\s+)?(?:đường|phố|quận|huyện|phường|tỉnh|thành\s+phố|xã|street|district|ward|province|city|thị xã|thị trấn|thôn|ấp)\b\s*[\w\s,-]*",
 }
 
 
